@@ -1,7 +1,7 @@
 import { model, Schema } from "mongoose";
 
 const ExerciceShema = new Schema({
-    _id: { type: String, required: true },
+    id: { type: String, required: true },
     username: { type: String, required: true },
     date: { type: Date },
     duration: { type: Number, required: true },
