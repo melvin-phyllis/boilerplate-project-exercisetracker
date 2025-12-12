@@ -1,12 +1,12 @@
 import { LogCollection } from "../models/log.js"
 
-const Newlog = async (req, res) => {
+const Getlog = async (req, res) => {
     try {
 
         const id = req.params["_id"]
 
 
-        const body = await LogCollection.find({ "id": { $in: id } })
+        const body = await LogCollection.findOne({ "id": { $in: id } })
 
         res.json(body)
 
@@ -19,4 +19,4 @@ const Newlog = async (req, res) => {
 
 }
 
-export default Newlog
+export default Getlog

@@ -1,7 +1,7 @@
 import express from "express"
 import GetAllusers from "../controllers/GetAllusers.js"
+import Getlog from "../controllers/Getlog.js"
 import Newexercie from "../controllers/Newexercie.js"
-import Newlog from "../controllers/Newlog.js"
 import Newuser from "../controllers/Newuser.js"
 
 
@@ -13,6 +13,6 @@ routes.post("/users/:_id/exercises", Newexercie)
 
 routes.get("/users", GetAllusers)
 
-routes.get("/users/:_id/logs", Newlog)
+routes.get("/users/:_id/logs", Getlog)
 
 export default routes
