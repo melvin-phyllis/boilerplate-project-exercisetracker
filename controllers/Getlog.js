@@ -1,4 +1,4 @@
-import { LogCollection } from "../models/log.js"
+import { LogCollection } from "../models/log.js";
 
 const Getlog = async (req, res) => {
     try {
@@ -8,7 +8,18 @@ const Getlog = async (req, res) => {
 
         const body = await LogCollection.findOne({ "id": { $in: id } })
 
-        res.json(body)
+        res.json({
+            _id: body._id,
+            username: body.username,
+            count: body.count,
+
+
+            log: body.log.map(item => ({
+                description: item.description,
+                duration: item.duration,
+                date: new Date(item.date).toDateString()
+            }))
+        });
 
     } catch (error) {
 
