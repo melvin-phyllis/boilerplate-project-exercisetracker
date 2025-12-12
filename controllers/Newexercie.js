@@ -6,59 +6,44 @@ const Newexercie = async (req, res) => {
     try {
 
         const { _id } = req.params
-        const id = _id
         const user = await UserCollection.findById(_id)
 
         if (!user) return res.send("utilisateur non trouver")
 
         const { description, duration, date } = req.body
 
-
+        const parsedDate = date ? new Date(date) : new Date()
+        const exerciseDate = isNaN(parsedDate) ? new Date() : parsedDate
+        const exerciseDuration = Number(duration)
 
         const body = await ExerciceCollection({
             id: _id,
             username: user.username,
             description: description,
-            duration: duration,
-            date: date ? date : new Date().toDateString()
+            duration: exerciseDuration,
+            date: exerciseDate
         })
 
         await body.save();
 
-
-        const numarate = await ExerciceCollection.countDocuments({})
-
-        const log = await LogCollection.findOne({ "id": { _id } })
-
-
-
-        if (!log) {
-
-            const log1 = new LogCollection({
-
-                username: user.username,
-                count: numarate,
-                id: id,
-
-            })
-
-            await log1.save()
-        }
-
-        await LogCollection.findOneAndUpdate(
-            { id: id },
+        const updatedLog = await LogCollection.findOneAndUpdate(
+            { id: _id },
             {
-                $set: { count: numarate },
+                $setOnInsert: { username: user.username, id: _id, count: 0 },
                 $push: {
                     log: {
                         description: description,
-                        duration: duration,
-                        date: date ? date : new Date().toDateString()
+                        duration: exerciseDuration,
+                        date: exerciseDate
                     }
                 }
             },
+            { new: true, upsert: true }
 
         );
+
+        updatedLog.count = updatedLog.log.length
+        await updatedLog.save()
 
 
         res.json({
