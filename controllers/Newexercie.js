@@ -9,7 +9,6 @@ const Newexercie = async (req, res) => {
         const id = _id
         const user = await UserCollection.findById(_id)
 
-        console.log("a", user)
         if (!user) return res.send("utilisateur non trouver")
 
         const { description, duration, date } = req.body
@@ -24,15 +23,14 @@ const Newexercie = async (req, res) => {
             date: date ? date : new Date().toDateString()
         })
 
-        console.log("b", body)
         await body.save();
 
 
         const numarate = await ExerciceCollection.countDocuments({})
 
-        const log = await LogCollection.findOne({ "id": {  _id } })
+        const log = await LogCollection.findOne({ "id": { _id } })
 
-        console.log(log)
+
 
         if (!log) {
 
@@ -47,16 +45,20 @@ const Newexercie = async (req, res) => {
             await log1.save()
         }
 
-        await LogCollection.findOneAndUpdate({ id: id }, {
-            
-          $push  : {
-                log: {
-                    description: description,
-                    duration: duration,
-                    date: date ? date : new Date().toDateString()
+        await LogCollection.findOneAndUpdate(
+            { id: id },
+            {
+                $set: { count: numarate },
+                $push: {
+                    log: {
+                        description: description,
+                        duration: duration,
+                        date: date ? date : new Date().toDateString()
+                    }
                 }
-            }
-        })
+            },
+
+        );
 
 
         res.json({

@@ -4,7 +4,6 @@ const Newuser = async (req, res) => {
     try {
         const { username } = req.body
 
-        console.log(username)
 
         if (username) {
 
